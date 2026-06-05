@@ -23,7 +23,8 @@ client = get_client()
 if "chat" not in st.session_state:
     st.session_state.chat = client.chats.create(
         model=MODEL,
-        config={"system_instruction": SYSTEM_PROMPT},
+        # Added google_search tool to enable AI Agent grounding capabilities
+        config={"system_instruction": SYSTEM_PROMPT, "tools": [{"google_search":{}}]}
     )
 
 if "messages" not in st.session_state:
@@ -64,8 +65,9 @@ with st.sidebar:
     st.markdown("### ⚙️ Settings")
     if st.button("🗑️ Clear chat"):
         st.session_state.messages = []
+        # Reset chat session and ensure google_search tool remains active
         st.session_state.chat = client.chats.create(
             model=MODEL,
-            config={"system_instruction": SYSTEM_PROMPT},
+            config={"system_instruction": SYSTEM_PROMPT, "tools":[{"google_search":{}}]},
         )
         st.rerun()
